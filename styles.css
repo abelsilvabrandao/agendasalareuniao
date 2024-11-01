@@ -122,7 +122,14 @@ body {
 h1 {
     text-align: center;
     color: var(--text-color);
+    font-size: 15px;
 }
+
+h2 {
+    text-align: center;
+    color: var(--text-color);
+    margin-top: 1px;
+    }
 
 #diasSemana {
     display: grid;
@@ -322,13 +329,6 @@ input:checked + .slider:before {
 
   /* Estilos para mobile */
 @media (max-width: 768px) {
-    .theme-switch-wrapper {
-        position: fixed; /* Fixa o botão na parte superior do mobile */
-        right: 20px;
-        top: 20px;
-        z-index: 1000; /* Garante que esteja sempre por cima */
-    }
-
     .appointment-details {
         display: none; /* Oculto por padrão no mobile */
         margin-top: 5px;
@@ -366,4 +366,3 @@ input[type="text"] {
     text-align: center; /* Centraliza o conteúdo dentro do contêiner */
     margin-bottom: 5px; /* Espaço abaixo da logo e do título */
 }
-

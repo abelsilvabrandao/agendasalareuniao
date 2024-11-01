@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agendamento</title>
-    <link rel="stylesheet" href="styles.css">    
+    <link rel="stylesheet" href="styles.css">
+    <!-- SweetAlert2 Bulma Theme e Script (CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma/bulma.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    
     <!-- Firebase App (necessário para inicializar o Firebase) -->
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <!-- Firebase Firestore (para usar o Firestore) -->
@@ -19,17 +23,21 @@
         </label>
         <em>Modo Escuro</em>
     </div>
-
+    
     <!-- Adicionando a logo da empresa -->
     <div class="sala-info">
         <img src="logo-intermartimaOFICIAL2024.png" alt="Logo da Empresa" class="logo">
-        <h1>SALA 01</h1>
+        <h1>Sala de Reunião</h1>
+        <h2>PARIPE</h2>
     </div>
-
+    
     <div id="diasSemana"></div>
     <div id="mobileOverlay" class="mobile-overlay"></div>
     <div id="mobileActionSheet" class="mobile-action-sheet"></div>
+    
+    <!-- Script principal -->
     <script src="script.js"></script>
 </body>
 </html>
+
 
