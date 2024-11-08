@@ -719,13 +719,14 @@ if (qrCodesContainer && salas) { // Verifica se o container e o array de salas e
             <a href="?sala=${encodeURIComponent(sala)}">
                 <img src="https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(window.location.href)}&sala=${encodeURIComponent(sala)}&size=100x100" alt="QR Code para ${sala}">
             </a>
-            <p>${sala}</p> <!-- Nome da sala abaixo do QR code -->
+            <p class="qr-code-sala-name">${sala}</p> <!-- Adiciona uma classe específica para o nome da sala -->
         `;
         qrCodesContainer.appendChild(qrCodeDiv);
     });
 } else {
     console.warn("Elemento 'qrCodes' ou array 'salas' não encontrado no DOM.");
 }
+
 // Função para abrir o modal de agendamento unico ou multiplo e salvar no Firestore
 async function abrirModal(horarioOuArray) {
     const salaSelecionada = document.getElementById('nomeSala').textContent;
