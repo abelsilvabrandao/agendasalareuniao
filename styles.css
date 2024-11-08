@@ -1,5 +1,13 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: auto;
+    overflow-x: hidden;
+    user-select: none;
+  }
+
 :root {
-    --primary-color: #007bff;
+    --primary-color: #036205;
     --background-color: #fafbfb;
     --text-color: #333333;
     --border-color: #dddddd;
@@ -8,10 +16,12 @@
     --past-color: #f0f0f0;
     --past-ocupied-color: #e4a3a3;
     --switch-bg-url: url(sun.svg);
+    --navbar-bg: #145912;
+    --navbar-text: #ffffff;
 }
 
 [data-theme="dark"] {
-    --primary-color: #0056b3;
+    --primary-color: #77ed6a;
     --background-color: #333333;
     --text-color: #ffffff;
     --border-color: #444444;
@@ -20,23 +30,130 @@
     --past-color: #2a2a2a;
     --past-ocupied-color: #3a3a3a;
     --switch-bg-url: url(moon-stars.svg);
+    --navbar-bg: #145912;
+    --navbar-text: #e0e0e0;
 }
 
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 20px;
+    padding: 0;
     background-color: var(--background-color);
     color: var(--text-color);
     transition: all 0.3s ease;
 }
 
+/* Barra de navegação */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Alinha o conteúdo verticalmente */
+    height: 80px; /* Ajuste a altura conforme necessário */
+    z-index: 1000;
+}
+.navbar-title-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    position: relative;
+    min-width: 0; /* Impede que o título empurre outros elementos */
+}
+.navbar-title-wrapper * {
+    pointer-events: auto; /* Reabilita eventos para elementos internos */
+}
+
+/* Para evitar que o conteúdo do navbar empurre os elementos */
+.navbar-collapse {
+    position: absolute; /* Faz com que o menu não empurre os outros elementos */
+    top: 49px; /* Coloque abaixo da navbar */
+}
+
+/* Contêiner que envolve o h1 e o h2 */
+.sala-app {
+    text-align: center; /* Garante que o h1 e h2 estejam centralizados dentro deste contêiner */
+    margin: 0; /* Remove margens */
+    padding: 0; /* Remove padding */
+    color: white; /* Cor do texto */
+}
+
+/* Estilo para o h1 e h2 */
+.sala-app h1, .sala-app h2 {
+    margin: 0; 
+}
+/* Estilo para o h1 */
+.sala-app h1 {
+    margin: 0; /* Remove a margem do h1 */
+    font-size: 15px; /* Ajuste o tamanho da fonte conforme necessário */
+}
+/* Estilo para o h2 */
+.sala-app h2 {
+    margin: 0; /* Remove a margem do h2 */
+    font-size: 23px; /* Ajuste o tamanho da fonte conforme necessário */
+}
+/* Estilos para a sala-info */
+.sala-info {
+    text-align: center; /* Centraliza o texto */
+    margin: 0; /* Remove margens */
+    padding: 10px 0; /* Adiciona padding para espaçamento */
+}
+/* Estilo para o nome da sala */
+#nomeSala {
+    font-size: 1.3em; /* Tamanho do nome da sala */
+    margin: 0; /* Remove margens */
+    color: #145912;
+    font-weight: bold;
+}
+
+/* Estilo para o texto pequeno */
+.sala-text {
+    font-size: 0.7em; /* Tamanho menor para o texto */
+    color: black; /* Cor do texto */
+    display: block; /* Faz com que o texto ocupe uma nova linha */
+    margin: 0; /* Espaçamento abaixo do texto */
+}
+/* Estilos para a seção de salas disponíveis */
+.salas-disponiveis {
+    margin: 0; /* Espaçamento acima da seção de disponibilidade */
+}
+/* Estilos da Navbar */
+.navbar {
+    background-color: var(--navbar-bg) !important;
+    transition: background-color 0.3s ease;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+}
+
+.navbar-dark .navbar-nav .nav-link,
+.navbar-dark .navbar-brand {
+    color: var(--navbar-text);
+}
+
+.navbar-dark .dropdown-menu {
+    background-color: var(--navbar-bg);
+    border: 1px solid var(--border-color);
+}
+
+.navbar-dark .dropdown-item {
+    color: var(--navbar-text);
+}
+
+.navbar-logo {
+    height: 40px;
+    width: auto;
+}
+
+/* Theme Switch */
 .theme-switch-wrapper {
     display: flex;
     align-items: center;
+    gap: 10px;
     position: absolute;
     right: 20px;
-    top: 20px;
+    top: 90px;
 }
 
 .theme-switch {
@@ -74,77 +191,55 @@ body {
     transition: .4s;
 }
 
-input:checked + .slider:before {
-    transform: translateX(26px);
-}
-
 input:checked + .slider {
     background-color: #66bb6a;
 }
 
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Container e Conteúdo Principal */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Botões das Salas */
+.room-buttons button:hover {
+    background-color: #37d1a3;
+    color: #ffffff;
+}
+
+.room-buttons button:active {
+    transform: scale(0.95);
+    background-color: #2fb38a;
+}
+
+/* Animação do botão de switch */
 .light #switch button {
     animation: slide-in 0.4s forwards;
 }
 
 @keyframes slide-in {
-    from {
-        left: 0;
-    }
-    to {
-        left: 50%;
-    }
+    from { left: 0; }
+    to { left: 50%; }
 }
 
 @keyframes slide-back {
-    from {
-        left: 50%;
-    }
-    to {
-        left: 0;
-    }
-}
-
-
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: var(--background-color);
-    color: var(--text-color);
-    transition: all 0.3s ease;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-h1 {
-    text-align: center;
-    color: var(--text-color);
-    font-size: 15px;
-}
-
-h2 {
-    text-align: center;
-    color: var(--text-color);
-    margin-top: 1px;
-    }
-
-#diasSemana {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 20px;
-    margin-top: 20px;
-    font-weight: bold
+    from { left: 50%; }
+    to { left: 0; }
 }
 
 .dia {
     border: 1px solid var(--border-color);
     padding: 10px;
     border-radius: 5px;
-    }
-
+    width: 100%;
+    box-sizing: border-box;
+}
+/* Estilos de Horários */
 .horario {
     padding: 10px;
     margin: 3px 0;
@@ -152,12 +247,14 @@ h2 {
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
+    pointer-events: auto;
 }
 
 .horario-hora {
     font-size: 1.2em;
     font-weight: bold;
     margin-right: 10px;
+    overflow-y: auto; /* Permite rolagem vertical */
 }
 
 .horario-nome-assunto {
@@ -174,7 +271,7 @@ h2 {
     background-color: var(--occupied-color);
     color: white;
     display: flex;
-    font-size: 14px; /* Fonte menor para Nome e Assunto */
+    font-size: 14px;
 }
 
 .past {
@@ -184,73 +281,83 @@ h2 {
 }
 
 .past-occupied {
-    background-color: var(--occupied-color); /* Cor de ocupado */
-    opacity: 0.5; /* Aumenta a opacidade para mais visível */
+    background-color: var(--occupied-color);
+    opacity: 0.5;
     color: #fff;
     cursor: not-allowed;
     display: flex;
-    filter: brightness(0.8); /* Adiciona uma redução de brilho */
-    font-size: 14px; /* Fonte menor para Nome e Assunto */
+    filter: brightness(0.8);
+    font-size: 14px;
 }
 
-/* Theme Switch */
-.theme-switch-wrapper {
+input[type="text"] {
+    text-transform: uppercase;
+}
+
+/* Estilos da Logo */
+.logo {
+    max-width: 30%;
+    height: auto;
+    display: block;
+    margin-left: left;
+}
+
+@media (min-width: 768px) {
+    .logo {
+        max-width: 12%;
+        margin: 0 auto;
+    }
+}
+
+/* Estilos para o badge de notificação */
+.badge {
+    font-size: 0.95em;
+    font-weight: bold;
+    color: white;
+    padding: 0.55em 0.7em;
+    border-radius: 50%;
+    background-color: #008000;
+    position: absolute;
+    top: -2px;
+    right: -1px;
+    transform: translate(50%, -50%);
+    z-index: 1;
+    min-width: 1.2em;
+    height: 1.2em;
     display: flex;
     align-items: center;
-    position: absolute;
-    right: 20px;
-    top: 20px;
+    justify-content: center;
 }
 
-.theme-switch {
-    display: inline-block;
-    height: 34px;
-    position: relative;
-    width: 60px;
+/* Modo Light */
+body.light .room-buttons button {
+    background-color: #def1e0;
+    color: #333; /* Ajuste a cor do texto conforme necessário */
+    font-weight: bold;
+    border: none;
 }
 
-.theme-switch input {
-    display: none;
-}
-
-.slider {
-    background-color: #cccccc;
-    bottom: 0;
-    cursor: pointer;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    transition: .4s;
-}
-
-.slider:before {
-    background-color: #fff;
-    bottom: 4px;
-    content: "";
-    height: 26px;
-    left: 4px;
-    position: absolute;
-    transition: .4s;
-    width: 26px;
-}
-
-input:checked + .slider {
+body.light .room-buttons button.selected {
     background-color: #66bb6a;
+    color: white;
+    font-weight: bold;
 }
 
-input:checked + .slider:before {
-    transform: translateX(26px);
+/* Modo Dark */
+body.dark .room-buttons button {
+    background-color: #4b4f4b;
+    color: #e0e0e0; /* Ajuste a cor do texto conforme necessário */
+    font-weight: bold;
+    border: none;
 }
 
-.slider.round {
-    border-radius: 34px;
+body.dark .room-buttons button.selected {
+    background-color: #145912;
+    color: white;
+    font-weight: bold;
 }
 
-.slider.round:before {
-    border-radius: 50%;
-}
-
+/* Estilos adicionais para o overlay e a ação de cancelamento no mobile */
 .mobile-overlay {
     position: fixed;
     top: 0;
@@ -269,100 +376,174 @@ input:checked + .slider:before {
     background-color: white;
     padding: 20px;
     border-radius: 20px 20px 0 0;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
-    z-index: 1000;
-    display: none;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.mobile-action-sheet.active {
-    transform: translateY(0);
-}
-
-.action-sheet-content {
-    padding: 20px;
-}
-
-.action-sheet-option {
-    padding: 15px;
+.mobile-action-sheet h3 {
+    font-size: 1.2em;
+    margin: 0;
+    color: var(--text-color);
     text-align: center;
-    border-bottom: 1px solid #eee;
-    cursor: pointer;
 }
 
-.action-sheet-option:last-child {
-    border-bottom: none;
+/* Container dos QR Codes */
+.qr-codes-container {
+    display: ruby;
+    flex-wrap: wrap; /* Permite que os itens quebrem para a próxima linha em telas menores */
+    justify-content: center; /* Centraliza os QR Codes horizontalmente */
+    gap: 20px; /* Espaçamento entre os QR Codes */
+    margin-top: 20px;
 }
 
-.action-sheet-cancel {
-    margin-top: 10px;
-    color: #D9534F;
+/* Itens Individuais dos QR Codes */
+.qr-code-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 150px; /* Define uma largura fixa para consistência */
+    text-align: center;
+}
+
+/* Imagens dos QR Codes */
+.qr-code {
+    width: 100px; /* Define o tamanho do QR Code */
+    height: 100px;
+    object-fit: contain; /* Garante que a imagem não distorça */
+    margin-bottom: 8px; /* Espaçamento entre o QR e o nome */
+}
+
+/* Nomes dos QR Codes */
+.qr-name {
+    font-size: 0.3em; /* Reduz o tamanho da fonte */
+    color: black;
+    word-wrap: break-word; /* Quebra de linha para nomes longos */
+}
+
+@media (max-width: 768px) {
+    .qr-codes-container {
+        display: ruby;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .qr-code-item {
+        width: 110px; /* Ajusta a largura para telas menores */
+    }
+
+    .qr-code {
+        width: 75px;
+        height: 75px;
+    }
+
+    .qr-name {
+        font-size: 02em;
+    }
+}
+
+.qr-code-item:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s;
+    color: black;
+}
+
+.qr-code-item {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fff; /* Fundo branco para contraste */
+}
+
+.qr-name {
+    font-family: 'Roboto', sans-serif; /* Exemplo de fonte */
+    color: black;
+}
+
+/* Estilos para dispositivos móveis */
+@media (max-width: 768px) {
+    #diasSemanaTabs {
+        display: flex;
+        overflow-x: auto;  /* Permite a rolagem horizontal */
+        white-space: nowrap;
+        flex-direction: row;
+        flex-wrap: nowrap;
+    }
+
+    #diasSemanaTabs .nav-item {
+        flex: 0 0 auto;
+    }
+
+    #diasSemanaTabs .nav-link {
+        padding: 0.25rem 0.5rem; /* Reduz o padding */
+        font-size: 0.8em; /* Diminui a fonte para caber melhor */
+        font-weight: bold;
+        min-width: 80px; /* Define uma largura mínima menor para caber todos os dias */
+        text-align: center;
+    }
+}
+/* Estilos gerais para as tabs */
+#diasSemanaTabs .nav-link {
+    color: var(--text-color);
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
     font-weight: bold;
 }
 
-/* Estilos para desktop */
-@media (min-width: 769px) {
-    .appointment {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    
-    .appointment-details {
-      display: flex !important; /* Sempre visível no desktop */
-      font-size: 0.9em;
-      gap: 10px;
-    }
-  }
-  
-  /* Estilos para mobile */
-  @media (max-width: 768px) {
-    .appointment-details {
-      display: none; /* Oculto por padrão no mobile */
-      margin-top: 5px;
-    }
-    .appointment {
-      padding: 10px;
-    }
-  }
-
-  /* Estilos para mobile */
-@media (max-width: 768px) {
-    .appointment-details {
-        display: none; /* Oculto por padrão no mobile */
-        margin-top: 5px;
-    }
-
-    .appointment {
-        padding: 10px;
-    }
-}
-input[type="text"] {
-    text-transform: uppercase; /* Transforma o texto em maiúsculo */
+#diasSemanaTabs .nav-link:hover {
+    color: var(--primary-color); /* Cor principal em hover */
+    background-color: #e6f5eb; /* Sutil tom mais claro no hover */
 }
 
-@media (max-width: 768px) {
-    #diasSemana {
-        grid-template-columns: 1fr; /* Exibe apenas um dia por vez no modo HOJE */
-    }
+#diasSemanaTabs .nav-link.active {
+    color: var(--primary-color);
+    background-color: var(--background-color);
+    border-color: var(--border-color) var(--border-color) transparent;
+    border-bottom: 3px solid var(--primary-color); /* Destaque para a aba ativa */
 }
 
-.logo {
-    max-width: 30%; /* Para dispositivos móveis, a logo ocupará no máximo 30% da largura */
-    height: auto;    /* Mantém a proporção da imagem */
-    display: block;  /* Para evitar espaços indesejados embaixo da imagem */
-    margin-left: left; /* Para mobile, adiciona margem à esquerda */
+/* Tema Dark */
+[data-theme="dark"] #diasSemanaTabs .nav-link {
+    color: var(--text-color);
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
 }
 
-@media (min-width: 768px) { /* Para desktop */
-    .logo {
-        max-width: 12%; /* Para desktop, a logo ocupará no máximo 12% da largura */
-        margin: 0 auto;  /* Centraliza a logo horizontalmente no desktop */
-    }
+[data-theme="dark"] #diasSemanaTabs .nav-link:hover {
+    color: var(--primary-color);
+    background-color: #2e2e2e; /* Tom mais escuro no hover para modo dark */
 }
 
-.sala-info {
-    text-align: center; /* Centraliza o conteúdo dentro do contêiner */
-    margin-bottom: 5px; /* Espaço abaixo da logo e do título */
+[data-theme="dark"] #diasSemanaTabs .nav-link.active {
+    color: var(--primary-color);
+    background-color: var(--background-color);
+    border-color: var(--border-color) var(--border-color) transparent;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.room-buttons button {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.room-buttons button:focus,
+.room-buttons button:active {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.mobile-action-sheet {
+    text-align: center;
+}
+
+.sala-selecionada h3 {
+    margin: 10px 0;
+    font-size: 1.2em;
+    color: var(--text-color);
+}
+
+.salas-disponiveis marquee {
+    color: rgb(48, 43, 43);
+    padding: 10px;
+    border-radius: 5px;
 }
