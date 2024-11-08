@@ -1,3 +1,15 @@
+  self.addEventListener('install', (event) => {
+    console.log('Service Worker: Install');
+});
+
+self.addEventListener('activate', (event) => {
+    console.log('Service Worker: Activate');
+});
+
+self.addEventListener('fetch', (event) => {
+    console.log('Service Worker: Fetch', event.request.url);
+});
+
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
       navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
@@ -8,6 +20,35 @@ if ('serviceWorker' in navigator) {
     });
   }
 
+  const CACHE_NAME = 'v1';
+const urlsToCache = [
+    '/',
+    '/index.html',
+    '/style.css',
+    '/script.js',
+    '/icon-192x192.png',
+    '/icon-512x512.png'
+];
+
+self.addEventListener('install', (event) => {
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then((cache) => {
+                console.log('Opened cache');
+                return cache.addAll(urlsToCache);
+            })
+    );
+});
+
+self.addEventListener('fetch', (event) => {
+    event.respondWith(
+        caches.match(event.request)
+            .then((response) => {
+                // Retorna o recurso do cache se ele existir
+                return response || fetch(event.request);
+            })
+    );
+});
 // No início do seu arquivo JavaScript
 document.addEventListener('DOMContentLoaded', function() {
     // Recupera a última tab selecionada do localStorage
