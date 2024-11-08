@@ -316,7 +316,7 @@ function formatarIdSala(sala) {
 }
 
 // Defina suas salas conhecidas
-const salasConhecidas = ['PARIPE', 'ILHÉUS', 'BAÍA DE TODOS OS SANTOS (DIRETORIA)'];
+const salasConhecidas = ['paripe', 'ilheus', 'bahiadetodosossantosdiretoria'];
 
 // Verifica a sala selecionada na URL
 function verificarSalaNaURL() {
