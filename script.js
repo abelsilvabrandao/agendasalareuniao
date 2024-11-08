@@ -269,10 +269,34 @@ function formatarIdSala(sala) {
     return sala
         .normalize("NFD") // Normaliza a string para decompor caracteres acentuados
         .replace(/[\u0300-\u036f]/g, "") // Remove acentos
+        .replace(/[^a-zA-Z0-9]/g, "")
         .replace(/\s/g, "") // Remove espaços
-        .toUpperCase(); // Converte para maiúsculas
+        .toLowerCase(); // Converte para minúsculas
 }
 
+// Defina suas salas conhecidas
+const salasConhecidas = ['PARIPE', 'ILHÉUS', 'BAÍA DE TODOS OS SANTOS (DIRETORIA)'];
+
+// Verifica a sala selecionada na URL
+function verificarSalaNaURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const salaSelecionada = urlParams.get('sala');
+
+    // Verifica se a sala selecionada está nas salas conhecidas
+    if (!salasConhecidas.some(sala => formatarIdSala(sala) === salaSelecionada)) {
+        // Se não estiver, redireciona para uma sala padrão
+        const salaPadrao = formatarIdSala('PARIPE'); // ou qualquer outra sala que você queira usar como padrão
+        window.history.replaceState({}, '', `?sala=${salaPadrao}`);
+        document.getElementById('nomeSala').textContent = salaPadrao.toUpperCase(); // Atualiza o nome da sala na interface
+        carregarAgendamentos(); // Carrega os agendamentos para a sala padrão
+    } else {
+        // Se estiver, atualiza o nome da sala na interface
+        document.getElementById('nomeSala').textContent = salaSelecionada.toUpperCase();
+        carregarAgendamentos(); // Carrega os agendamentos para a sala selecionada
+    }
+}
+// Chame a função ao carregar a página
+document.addEventListener('DOMContentLoaded', verificarSalaNaURL);
 // Função para carregar agendamentos do Firestore em tempo real
 function carregarAgendamentos() {
     const salaSelecionada = document.getElementById('nomeSala').textContent;
@@ -358,7 +382,7 @@ function trocarSala(sala) {
     document.getElementById('nomeSala').textContent = sala.toUpperCase();
     // Atualiza a URL sem recarregar a página  
     const url = new URL(window.location);
-    url.searchParams.set('sala', sala);
+    url.searchParams.set('sala', formatarIdSala(sala));
     window.history.pushState({}, '', url);
 
     // Limpa seleções de horários, mas mantém a seleção do botão
