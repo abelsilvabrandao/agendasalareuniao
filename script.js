@@ -203,9 +203,9 @@ async function atualizarDisponibilidadeSalas() {
         if (fechado) {
             corBolinha = '🔒'; // Bolinha cinza para fechado
         } else if (!disponivel) {
-            corBolinha = '❌'; // Bolinha vermelha para ocupado
+            corBolinha = '⛔'; // Bolinha vermelha para ocupado
         } else {
-            corBolinha = '✅'; // Bolinha verde para disponível
+            corBolinha = '🟢'; // Bolinha verde para disponível
         }
         return `${corBolinha} ${sala}`;
     }).join(' | ');
