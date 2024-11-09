@@ -1,4 +1,4 @@
-  self.addEventListener('install', (event) => {
+self.addEventListener('install', (event) => {
     console.log('Service Worker: Install');
 });
 
@@ -127,46 +127,46 @@ function handleMouseUp() {
     document.querySelectorAll('.selecting').forEach(el => el.classList.remove('selecting')); // Remove classe 'selecting' de todos os elementos
     limparSelecao();
 }
-
 // Handlers de eventos para touch (mobile)
 function handleTouchStart(e) {
-    e.preventDefault(); // Prevê o comportamento padrão de toque
     const element = e.target;
 
-    if (!element.classList.contains('available')) return; // Verifica se o elemento está disponível para seleção
+    if (!element.classList.contains('available')) return;
 
     touchTimeout = setTimeout(() => {
-        isTouchSelecting = true; // Inicia o modo de seleção por toque
+        isTouchSelecting = true;
         element.classList.add('selecting');
         toggleHorarioSelection(element, element.dataset.horario, element.dataset.diaSemana, new Date(element.dataset.dataDia));
-    }, 500); // Espera 500ms para evitar seleção acidental
+    }, 600);
 
-    lastTouchedElement = element; // Armazena o último elemento tocado
+    lastTouchedElement = element;
     limparSelecao();
 }
 
 function handleTouchMove(e) {
-    if (!isTouchSelecting) return; // Apenas executa se o toque está selecionando
+    if (!isTouchSelecting) return; // Se não estiver selecionando, permite rolagem
+
+    e.preventDefault(); // Bloqueia rolagem enquanto está selecionando
 
     const touch = e.touches[0];
     const element = document.elementFromPoint(touch.clientX, touch.clientY);
 
     if (element && element.classList.contains('horario') && element.classList.contains('available') && element !== lastTouchedElement) {
-        const currentDay = element.dataset.diaSemana;
-        const firstDay = selectedHorarios[0]?.diaSemana;
-
         toggleHorarioSelection(element, element.dataset.horario, element.dataset.diaSemana, new Date(element.dataset.dataDia));
         lastTouchedElement = element; // Atualiza o último elemento tocado
     }
 }
 
 function handleTouchEnd() {
-    clearTimeout(touchTimeout); // Cancela o timeout de toque
+    clearTimeout(touchTimeout);
+
     if (isTouchSelecting && selectedHorarios.length > 0) {
-        abrirModal(selectedHorarios); // Abre modal com horários selecionados
+        abrirModal(selectedHorarios);
     }
-    isTouchSelecting = false; // Reseta a seleção por toque
-    document.querySelectorAll('.selecting').forEach(el => el.classList.remove('selecting')); // Remove classe 'selecting' de todos os elementos
+
+    isTouchSelecting = false; // Redefine a seleção
+    document.querySelectorAll('.selecting').forEach(el => el.classList.remove('selecting'));
+    limparSelecao();
 }
 
 // Função para limpar seleção de horários

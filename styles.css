@@ -3,8 +3,26 @@ html, body {
     padding: 0;
     height: auto;
     overflow-x: hidden;
-    user-select: none;
+    user-select: none !important;
   }
+
+/* Adicione isso ao seu arquivo CSS */
+.horario, .container {
+    user-select: none; /* Desabilita a seleção de texto */
+    -webkit-user-select: none; /* Para Safari */
+    -moz-user-select: none; /* Para Firefox */
+    -ms-user-select: none; /* Para Internet Explorer/Edge */
+}
+
+  input, textarea {
+    user-select: text;
+}
+
+/* Bloqueia seleção de texto nos horários e seus contêineres */
+.horario, .horario-hora, .horario-nome-assunto, .container {
+    user-select: none !important;
+    overflow-y: auto; /* Permite rolagem vertical */
+}
 
 :root {
     --primary-color: #036205;
@@ -41,6 +59,7 @@ body {
     background-color: var(--background-color);
     color: var(--text-color);
     transition: all 0.3s ease;
+    user-select: none;
 }
 
 /* Barra de navegação */
@@ -50,6 +69,7 @@ body {
     align-items: center; /* Alinha o conteúdo verticalmente */
     height: 80px; /* Ajuste a altura conforme necessário */
     z-index: 1000;
+    user-select: none;
 }
 .navbar-title-wrapper {
     display: flex;
@@ -58,6 +78,7 @@ body {
     flex-grow: 1;
     position: relative;
     min-width: 0; /* Impede que o título empurre outros elementos */
+    user-select: none;
 }
 .navbar-title-wrapper * {
     pointer-events: auto; /* Reabilita eventos para elementos internos */
@@ -103,6 +124,7 @@ body {
     margin: 0; /* Remove margens */
     color: #145912;
     font-weight: bold;
+    user-select: none;
 }
 
 /* Estilo para o texto pequeno */
@@ -204,6 +226,16 @@ input:checked + .slider:before {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    user-select: none;
+    overflow-y: auto; /* Permite rolagem vertical */
+}
+
+.container, .horarios {
+    user-select: none; /* Evita seleção de texto */
+}
+
+.container {
+    touch-action: pan-y; /* Permite rolagem vertical */
 }
 
 /* Botões das Salas */
@@ -238,6 +270,7 @@ input:checked + .slider:before {
     border-radius: 5px;
     width: 100%;
     box-sizing: border-box;
+    user-select: none;
 }
 /* Estilos de Horários */
 .horario {
@@ -248,6 +281,9 @@ input:checked + .slider:before {
     transition: all 0.3s ease;
     position: relative;
     pointer-events: auto;
+    user-select: none;
+    touch-action: manipulation; /* Impede a seleção de texto durante o toque */
+    overflow-y: auto; /* Permite rolagem vertical */
 }
 
 .horario-hora {
@@ -260,11 +296,15 @@ input:checked + .slider:before {
 .horario-nome-assunto {
     display: block;
     font-size: 0.9em;
+    user-select: none;
+    overflow-y: auto; /* Permite rolagem vertical */
 }
 
 .available {
     background-color: var(--available-color);
     color: white;
+    user-select: none;
+    overflow-y: auto; /* Permite rolagem vertical */
 }
 
 .occupied {
@@ -272,12 +312,14 @@ input:checked + .slider:before {
     color: white;
     display: flex;
     font-size: 14px;
+    user-select: none;
 }
 
 .past {
     background-color: var(--past-color);
     color: #999;
     cursor: not-allowed;
+    user-select: none;
 }
 
 .past-occupied {
@@ -288,6 +330,7 @@ input:checked + .slider:before {
     display: flex;
     filter: brightness(0.8);
     font-size: 14px;
+    user-select: none;
 }
 
 input[type="text"] {
@@ -300,6 +343,7 @@ input[type="text"] {
     height: auto;
     display: block;
     margin-left: left;
+    user-select: none;
 }
 
 @media (min-width: 768px) {
@@ -335,6 +379,7 @@ body.light .room-buttons button {
     color: #333; /* Ajuste a cor do texto conforme necessário */
     font-weight: bold;
     border: none;
+    user-select: none;
 }
 
 body.light .room-buttons button.selected {
@@ -349,12 +394,14 @@ body.dark .room-buttons button {
     color: #e0e0e0; /* Ajuste a cor do texto conforme necessário */
     font-weight: bold;
     border: none;
+    user-select: none;
 }
 
 body.dark .room-buttons button.selected {
     background-color: #145912;
     color: white;
     font-weight: bold;
+    user-select: none;
 }
 
 /* Estilos adicionais para o overlay e a ação de cancelamento no mobile */
@@ -395,7 +442,6 @@ body.dark .room-buttons button.selected {
     margin-top: 10px;
     height: 500px;
     padding: 0 20px; /* Adiciona algum espaço nas laterais */
-    pointer-events: none;
 }
 
 /* Itens Individuais dos QR Codes */
@@ -409,8 +455,8 @@ body.dark .room-buttons button.selected {
 
 /* Imagens dos QR Codes */
 .qr-code {
-    width: 100px; /* Define o tamanho do QR Code */
-    height: 100px;
+    width: 150px; /* Define o tamanho do QR Code */
+    height: 150px;
     object-fit: contain; /* Garante que a imagem não distorça */
     margin-bottom: 8px; /* Espaçamento entre o QR e o nome */
 }
@@ -427,7 +473,6 @@ body.dark .room-buttons button.selected {
 @media (max-width: 768px) {
     .qr-codes-container {
         justify-content: space-between;
-        pointer-events: none;
         margin-top: 3px;
         height: 600px;
     }
@@ -441,8 +486,8 @@ body.dark .room-buttons button.selected {
     }
 
     .qr-code {
-        width: 75px;
-        height: 75px;
+        width: 90px;
+        height: 90px;
     }
 }
 
@@ -468,6 +513,7 @@ body.dark .room-buttons button.selected {
         white-space: nowrap;
         flex-direction: row;
         flex-wrap: nowrap;
+        user-select: none;
     }
 
     #diasSemanaTabs .nav-item {
@@ -480,6 +526,7 @@ body.dark .room-buttons button.selected {
         font-weight: bold;
         min-width: 80px; /* Define uma largura mínima menor para caber todos os dias */
         text-align: center;
+        user-select: none;
     }
 }
 /* Estilos gerais para as tabs */
@@ -543,10 +590,12 @@ body.dark .room-buttons button.selected {
     margin: 10px 0;
     font-size: 1.2em;
     color: var(--text-color);
+    user-select: none;
 }
 
 .salas-disponiveis marquee {
     color: rgb(48, 43, 43);
     padding: 10px;
     border-radius: 5px;
+    user-select: none;
 }
