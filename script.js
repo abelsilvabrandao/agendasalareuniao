@@ -736,9 +736,12 @@ if (qrCodesContainer && salas) {
         const qrCodeDiv = document.createElement('div');
         qrCodeDiv.className = 'qr-code-item';
         
+        // Inclui o caminho correto para o QR code
+        const qrCodeUrl = `${window.location.origin}/agendasalareuniao/?sala=${encodeURIComponent(salaFormatada)}`;
+        
         qrCodeDiv.innerHTML = `
-            <a href="?sala=${encodeURIComponent(salaFormatada)}">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(window.location.origin + '/?sala=' + salaFormatada)}&size=100x100" alt="QR Code para ${sala}">
+            <a href="${qrCodeUrl}">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrCodeUrl)}&size=100x100" alt="QR Code para ${sala}">
             </a>
             <p class="qr-code-sala-name">${sala}</p> <!-- Exibe o nome original -->
         `;
