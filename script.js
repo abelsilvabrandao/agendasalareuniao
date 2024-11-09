@@ -315,29 +315,6 @@ function formatarIdSala(sala) {
         .toLowerCase(); // Converte para minúsculas
 }
 
-// Defina suas salas conhecidas
-const salasConhecidas = ['paripe', 'ilheus', 'bahiadetodosossantosdiretoria'];
-
-// Verifica a sala selecionada na URL
-function verificarSalaNaURL() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const salaSelecionada = urlParams.get('sala');
-
-    // Verifica se a sala selecionada está nas salas conhecidas
-    if (!salasConhecidas.some(sala => formatarIdSala(sala) === salaSelecionada)) {
-        // Se não estiver, redireciona para uma sala padrão
-        const salaPadrao = formatarIdSala('PARIPE'); // ou qualquer outra sala que você queira usar como padrão
-        window.history.replaceState({}, '', `?sala=${salaPadrao}`);
-        document.getElementById('nomeSala').textContent = salaPadrao.toUpperCase(); // Atualiza o nome da sala na interface
-        carregarAgendamentos(); // Carrega os agendamentos para a sala padrão
-    } else {
-        // Se estiver, atualiza o nome da sala na interface
-        document.getElementById('nomeSala').textContent = salaSelecionada.toUpperCase();
-        carregarAgendamentos(); // Carrega os agendamentos para a sala selecionada
-    }
-}
-// Chame a função ao carregar a página
-document.addEventListener('DOMContentLoaded', verificarSalaNaURL);
 // Função para carregar agendamentos do Firestore em tempo real
 function carregarAgendamentos() {
     const salaSelecionada = document.getElementById('nomeSala').textContent;
@@ -750,23 +727,56 @@ async function atualizarBadges() {
 atualizarBadges(); // Chama a função para mostrar os badges na inicialização
 atualizarDisponibilidadeSalas();
 // Adiciona QR Codes para cada sala
+
 const qrCodesContainer = document.getElementById('qrCodes');
 
-if (qrCodesContainer && salas) { // Verifica se o container e o array de salas existem
+if (qrCodesContainer && salas) {
     salas.forEach(sala => {
+        const salaFormatada = formatarIdSala(sala); // Formata a sala para a URL
         const qrCodeDiv = document.createElement('div');
-        qrCodeDiv.className = 'qr-code-item'; // Adiciona uma classe para estilização
+        qrCodeDiv.className = 'qr-code-item';
+        
         qrCodeDiv.innerHTML = `
-            <a href="?sala=${encodeURIComponent(sala)}">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(window.location.href)}&sala=${encodeURIComponent(sala)}&size=100x100" alt="QR Code para ${sala}">
+            <a href="?sala=${encodeURIComponent(salaFormatada)}">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(window.location.origin + '/?sala=' + salaFormatada)}&size=100x100" alt="QR Code para ${sala}">
             </a>
-            <p class="qr-code-sala-name">${sala}</p> <!-- Adiciona uma classe específica para o nome da sala -->
+            <p class="qr-code-sala-name">${sala}</p> <!-- Exibe o nome original -->
         `;
         qrCodesContainer.appendChild(qrCodeDiv);
     });
 } else {
     console.warn("Elemento 'qrCodes' ou array 'salas' não encontrado no DOM.");
 }
+
+// Verificação da sala selecionada
+function verificarSalaNaURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const salaSelecionadaFormatada = urlParams.get('sala'); // Nome formatado da sala
+    console.log('Sala selecionada da URL:', salaSelecionadaFormatada); // Debugging
+
+    // Normaliza o nome da sala selecionada para comparação
+    const salaOriginal = salas.find(sala => formatarIdSala(sala) === salaSelecionadaFormatada); // Encontra a sala original
+
+    if (!salaOriginal) {
+        // Se não estiver, bloqueia o acesso e exibe uma mensagem de erro
+        Swal.fire({
+            icon: 'error',
+            title: 'Sala Não Encontrada',
+            text: 'A sala que você tentou acessar não existe. Por favor, verifique a URL e tente novamente.',
+            confirmButtonText: 'OK'
+        }).then(() => {
+            // Redireciona para a página inicial ou uma página de erro
+            window.location.replace('/'); // Substitui a URL atual pela página inicial
+        });
+    } else {
+        // Se estiver, atualiza o nome da sala na interface
+        document.getElementById('nomeSala').textContent = salaOriginal; // Exibe o nome original
+        carregarAgendamentos(); // Carrega os agendamentos para a sala selecionada
+    }
+}
+
+// Chame a função ao carregar a página
+document.addEventListener('DOMContentLoaded', verificarSalaNaURL);
 
 // Função para abrir o modal de agendamento unico ou multiplo e salvar no Firestore
 async function abrirModal(horarioOuArray) {
