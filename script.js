@@ -310,7 +310,7 @@ function formatarIdSala(sala) {
     return sala
         .normalize("NFD") // Normaliza a string para decompor caracteres acentuados
         .replace(/[\u0300-\u036f]/g, "") // Remove acentos
-        .replace(/[^a-zA-Z0-9]/g, "")
+        .replace(/[^a-zA-Z0-9]/g, "") //remove simbolos
         .replace(/\s/g, "") // Remove espaços
         .toLowerCase(); // Converte para minúsculas
 }
@@ -649,11 +649,13 @@ async function atualizarBadges() {
                     return 'badgeBAIADETODOSOSSANTOS';
                 }
                 return 'badge' + nome
-                    .normalize('NFD')
-                    .replace(/[\u0300-\u036f]/g, '')
-                    .replace(/[^A-Z]/g, '')
-                    .toUpperCase();
+                .normalize("NFD") // Normaliza a string para decompor caracteres acentuados
+                .replace(/[\u0300-\u036f]/g, "") // Remove acentos
+                .replace(/[^a-zA-Z0-9]/g, "") //remove simbolos
+                .replace(/\s/g, "") // Remove espaços
+                .toLowerCase(); // Converte para minúsculas
             };
+
 
             const badgeId = formatarIdBadge(sala);
             const badge = document.getElementById(badgeId);
@@ -673,10 +675,11 @@ async function atualizarBadges() {
                     return 'agendamentos_BAIADETODOSOSSANTOS(DIRETORIA)';
                 }
                 return 'agendamentos_' + nome
-                    .normalize('NFD')
-                    .replace(/[\u0300-\u036f]/g, '')
-                    .replace(/[^A-Z]/g, '')
-                    .toUpperCase();
+                    .normalize("NFD") // Normaliza a string para decompor caracteres acentuados
+                    .replace(/[\u0300-\u036f]/g, "") // Remove acentos
+                    .replace(/[^a-zA-Z0-9]/g, "") //remove simbolos
+                    .replace(/\s/g, "") // Remove espaços
+                    .toLowerCase(); // Converte para minúsculas
             };
 
             // Função para formatar o nome da sala para o ID do badge
