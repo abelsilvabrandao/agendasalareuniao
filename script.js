@@ -205,32 +205,34 @@ async function atualizarDisponibilidadeSalas() {
     // Limpa o conteúdo anterior
     salasMobilesDisponiveis.innerHTML = '';
 
-    // Cria um array para armazenar as promessas de verificação de disponibilidade
+    const hoje = new Date();
+    const dataHoje = `${hoje.getDate().toString().padStart(2, '0')}/${(hoje.getMonth() + 1).toString().padStart(2, '0')}`;
+    const horaAtual = hoje.getHours();
+    const minutosAtuais = hoje.getMinutes();
+
     const verificacoes = salas.map(async (sala) => {
         try {
             const agendamentosRef = db.collection(`agendamentos_${formatarIdSala(sala)}`);
-            const hoje = new Date();
-            const dataHoje = `${hoje.getDate().toString().padStart(2, '0')}/${(hoje.getMonth() + 1).toString().padStart(2, '0')}`;
-            const horaAtual = hoje.getHours();
-            const minutosAtuais = hoje.getMinutes();
-
-            // Define a sala como fechada nos fins de semana ou após as 18h
             const diaDaSemana = hoje.getDay();
-            const estaFechado = (diaDaSemana === 0 || diaDaSemana === 6) || (horaAtual >= 18);
+            const estaFechado = (diaDaSemana === 0 || diaDaSemana === 6 || horaAtual >= 18);
 
             // Busca agendamentos para hoje
             const snapshot = await agendamentosRef.where('data', '==', dataHoje).get();
 
-            // Verifica a disponibilidade com base nos próximos 59 minutos
-            let estaDisponivel = snapshot.empty || snapshot.docs.every(doc => {
+            let estaDisponivel = true;
+
+            // Verifica cada agendamento para determinar a disponibilidade da sala
+            snapshot.docs.forEach(doc => {
                 const horario = doc.data().horario;
                 const [horaAgendada, minutosAgendados] = horario.split(':').map(Number);
 
                 // Calcula a diferença em minutos entre o horário atual e o horário agendado
                 const diferencaEmMinutos = (horaAgendada * 60 + minutosAgendados) - (horaAtual * 60 + minutosAtuais);
 
-                // Ocupa a sala somente se o horário estiver entre 0 e 59 minutos de diferença
-                return diferencaEmMinutos > 1;
+                // Se a diferença for menor que 60 minutos e maior ou igual a 0, a sala não está disponível
+                if (diferencaEmMinutos >= 0 && diferencaEmMinutos < 60) {
+                    estaDisponivel = false;
+                }
             });
 
             return { sala, disponivel: estaDisponivel, fechado: estaFechado };
@@ -240,10 +242,9 @@ async function atualizarDisponibilidadeSalas() {
         }
     });
 
-    // Aguarda todas as verificações
     const disponibilidade = await Promise.all(verificacoes);
 
-    // Cria o HTML com as salas e seus status
+    // Cria o HTML com o status das salas
     const statusHTML = disponibilidade.map(({ sala, disponivel, fechado }) => {
         let corBolinha;
         if (fechado) {
