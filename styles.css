@@ -380,6 +380,7 @@ body.light .room-buttons button {
     font-weight: bold;
     border: none;
     user-select: none;
+    margin: 10px;
 }
 
 body.light .room-buttons button.selected {
