@@ -387,6 +387,7 @@ body.light .room-buttons button.selected {
     background-color: #66bb6a;
     color: white;
     font-weight: bold;
+    margin: 10px;
 }
 
 /* Modo Dark */
@@ -396,6 +397,7 @@ body.dark .room-buttons button {
     font-weight: bold;
     border: none;
     user-select: none;
+    margin: 10px;
 }
 
 body.dark .room-buttons button.selected {
@@ -403,6 +405,7 @@ body.dark .room-buttons button.selected {
     color: white;
     font-weight: bold;
     user-select: none;
+    margin: 10px;
 }
 
 /* Estilos adicionais para o overlay e a ação de cancelamento no mobile */
