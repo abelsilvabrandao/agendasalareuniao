@@ -248,6 +248,7 @@ input:checked + .slider:before {
 .room-buttons button:active {
     transform: scale(0.95);
     background-color: #2fb38a;
+    margin: 10px;
 }
 
 /* Animação do botão de switch */
@@ -586,6 +587,7 @@ body.dark .room-buttons button.selected {
 .room-buttons button:active {
     outline: none !important;
     box-shadow: none !important;
+    margin: 10px;
 }
 
 .mobile-action-sheet {
