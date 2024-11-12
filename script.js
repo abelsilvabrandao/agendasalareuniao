@@ -210,21 +210,27 @@ async function atualizarDisponibilidadeSalas() {
         try {
             const agendamentosRef = db.collection(`agendamentos_${formatarIdSala(sala)}`);
             const hoje = new Date();
-            const diaDaSemana = hoje.getDay();
             const dataHoje = `${hoje.getDate().toString().padStart(2, '0')}/${(hoje.getMonth() + 1).toString().padStart(2, '0')}`;
+            const horaAtual = hoje.getHours();
+            const minutosAtuais = hoje.getMinutes();
 
-            // Verifica se a sala está fechada (fim de semana ou após o horário de funcionamento)
-            const estaFechado = (diaDaSemana === 0 || diaDaSemana === 6) || (hoje.getHours() >= 18);
+            // Define a sala como fechada nos fins de semana ou após as 18h
+            const diaDaSemana = hoje.getDay();
+            const estaFechado = (diaDaSemana === 0 || diaDaSemana === 6) || (horaAtual >= 18);
 
             // Busca agendamentos para hoje
             const snapshot = await agendamentosRef.where('data', '==', dataHoje).get();
 
-            // Verifica a disponibilidade da sala: ocupada se existe algum horário futuro agendado
+            // Verifica a disponibilidade com base nos próximos 59 minutos
             let estaDisponivel = snapshot.empty || snapshot.docs.every(doc => {
                 const horario = doc.data().horario;
+                const [horaAgendada, minutosAgendados] = horario.split(':').map(Number);
 
-                // Usa isHoraPassada para verificar se o horário já passou
-                return isHoraPassada(horario); // Se o horário já passou, ignora como ocupado
+                // Calcula a diferença em minutos entre o horário atual e o horário agendado
+                const diferencaEmMinutos = (horaAgendada * 60 + minutosAgendados) - (horaAtual * 60 + minutosAtuais);
+
+                // Ocupa a sala somente se o horário estiver entre 0 e 59 minutos de diferença
+                return diferencaEmMinutos > 59;
             });
 
             return { sala, disponivel: estaDisponivel, fechado: estaFechado };
@@ -253,6 +259,7 @@ async function atualizarDisponibilidadeSalas() {
     // Atualiza o marquee
     salasMobilesDisponiveis.innerHTML = statusHTML;
 }
+
 
 
 
