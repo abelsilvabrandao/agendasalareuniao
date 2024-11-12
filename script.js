@@ -205,28 +205,27 @@ async function atualizarDisponibilidadeSalas() {
     // Limpa o conteúdo anterior
     salasMobilesDisponiveis.innerHTML = '';
 
-    // Cria um array para armazenar as promises de verificação de disponibilidade
+    // Cria um array para armazenar as promessas de verificação de disponibilidade
     const verificacoes = salas.map(async (sala) => {
         try {
             const agendamentosRef = db.collection(`agendamentos_${formatarIdSala(sala)}`);
             const hoje = new Date();
-            const diaDaSemana = hoje.getDay(); // 0 = Domingo, 1 = Segunda, ..., 6 = Sábado
-            const horaAtual = hoje.getHours();
-            const minutosAtuais = hoje.getMinutes();
+            const diaDaSemana = hoje.getDay();
             const dataHoje = `${hoje.getDate().toString().padStart(2, '0')}/${(hoje.getMonth() + 1).toString().padStart(2, '0')}`;
 
-            // Verifica se está fechado
-            const estaFechado = (diaDaSemana === 0 || diaDaSemana === 6) || (horaAtual >= 18);
+            // Verifica se a sala está fechada (fim de semana ou após o horário de funcionamento)
+            const estaFechado = (diaDaSemana === 0 || diaDaSemana === 6) || (hoje.getHours() >= 18);
 
             // Busca agendamentos para hoje
             const snapshot = await agendamentosRef.where('data', '==', dataHoje).get();
 
-            // Verifica a disponibilidade comparando os horários dos agendamentos com o horário atual
-            const estaDisponivel = snapshot.empty || 
-                snapshot.docs.every(doc => {
-                    const horario = doc.data().horario;
-                    return isHoraDisponivel(horario, horaAtual, minutosAtuais);
-                });
+            // Verifica a disponibilidade da sala: ocupada se existe algum horário futuro agendado
+            let estaDisponivel = snapshot.empty || snapshot.docs.every(doc => {
+                const horario = doc.data().horario;
+
+                // Usa isHoraPassada para verificar se o horário já passou
+                return isHoraPassada(horario); // Se o horário já passou, ignora como ocupado
+            });
 
             return { sala, disponivel: estaDisponivel, fechado: estaFechado };
         } catch (error) {
@@ -242,11 +241,11 @@ async function atualizarDisponibilidadeSalas() {
     const statusHTML = disponibilidade.map(({ sala, disponivel, fechado }) => {
         let corBolinha;
         if (fechado) {
-            corBolinha = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#5f6368"><path d="M0 0h24v24H0z" fill="none"/><path d="M14.59 8L12 10.59 9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41 14.59 8zM12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>'; // Bolinha cinza para fechado
+            corBolinha = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#5f6368"><path d="M0 0h24v24H0z" fill="none"/><path d="M14.59 8L12 10.59 9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41 14.59 8zM12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>'; // Cinza para fechado
         } else if (!disponivel) {
-            corBolinha = '⛔'; // Bolinha vermelha para ocupado
+            corBolinha = '⛔'; // Vermelha para ocupado
         } else {
-            corBolinha = '🟢'; // Bolinha verde para disponível
+            corBolinha = '🟢'; // Verde para disponível
         }
         return `${corBolinha} ${sala}`;
     }).join(' | ');
@@ -254,6 +253,8 @@ async function atualizarDisponibilidadeSalas() {
     // Atualiza o marquee
     salasMobilesDisponiveis.innerHTML = statusHTML;
 }
+
+
 
 // Função para verificar se o horário do agendamento já passou em relação ao horário atual
 function isHoraDisponivel(horario, horaAtual, minutosAtuais) {
@@ -516,7 +517,6 @@ function verificarHorariosPassados() {
 setInterval(verificarHorariosPassados, 6000); // 60 segundos
 
 // Função gerarSemana modificada
-// Função gerarSemana modificada
 function gerarSemana(diaInicial = 0) {
     limparSelecao();
     const tabsContainer = document.getElementById('diasSemanaTabs');
@@ -576,7 +576,6 @@ function gerarSemana(diaInicial = 0) {
             if (ehPassado) {
                 status = 'past';
             }
-
             const idAgendamento = `${diasSemana[i]}_${dataFormatada.replace(/\//g, '_')}_${horario.replace(':', '-')}`;
             const agendamento = agendamentos[idAgendamento];
 
@@ -672,7 +671,7 @@ async function atualizarBadges() {
             // Função para formatar o nome da sala para o nome da coleção
             const formatarNomeColecao = (nome) => {
                 if (nome === 'BAÍA DE TODOS OS SANTOS (DIRETORIA)') {
-                    return 'agendamentos_BAIADETODOSOSSANTOS(DIRETORIA)';
+                    return 'agendamentos_baiadetodosossantosdiretoria';
                 }
                 return 'agendamentos_' + nome
                     .normalize("NFD") // Normaliza a string para decompor caracteres acentuados
@@ -752,6 +751,30 @@ if (qrCodesContainer && salas) {
     });
 } else {
     console.warn("Elemento 'qrCodes' ou array 'salas' não encontrado no DOM.");
+}
+
+// Verificação da sala selecionada
+function verificarSalaNaURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const salaSelecionadaFormatada = urlParams.get('sala'); // Nome formatado da sala
+    console.log('Sala selecionada da URL:', salaSelecionadaFormatada); // Debugging
+
+    // Normaliza o nome da sala selecionada para comparação
+    const salaOriginal = salas.find(sala => formatarIdSala(sala) === salaSelecionadaFormatada); // Encontra a sala original
+
+    if (!salaOriginal) {
+        // Se não estiver, bloqueia o acesso e exibe uma mensagem de erro
+        Swal.fire({
+            icon: 'info',
+            title: 'Bem Vindo',
+            text: 'Bem vindo ao sistema de agendamento de Salas InterMeeting.',
+            confirmButtonText: 'OK'
+        });
+    } else {
+        // Se estiver, atualiza o nome da sala na interface
+        document.getElementById('nomeSala').textContent = salaOriginal; // Exibe o nome original
+        carregarAgendamentos(); // Carrega os agendamentos para a sala selecionada
+    }
 }
 
 // Chame a função ao carregar a página
