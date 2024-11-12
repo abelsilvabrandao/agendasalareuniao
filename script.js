@@ -230,7 +230,7 @@ async function atualizarDisponibilidadeSalas() {
                 const diferencaEmMinutos = (horaAgendada * 60 + minutosAgendados) - (horaAtual * 60 + minutosAtuais);
 
                 // Ocupa a sala somente se o horário estiver entre 0 e 59 minutos de diferença
-                return diferencaEmMinutos > 59;
+                return diferencaEmMinutos > 1;
             });
 
             return { sala, disponivel: estaDisponivel, fechado: estaFechado };
@@ -259,9 +259,6 @@ async function atualizarDisponibilidadeSalas() {
     // Atualiza o marquee
     salasMobilesDisponiveis.innerHTML = statusHTML;
 }
-
-
-
 
 // Função para verificar se o horário do agendamento já passou em relação ao horário atual
 function isHoraDisponivel(horario, horaAtual, minutosAtuais) {
@@ -523,7 +520,6 @@ function verificarHorariosPassados() {
 // Verifica a cada minuto se algum horário passou, automatizando a atualização
 setInterval(verificarHorariosPassados, 6000); // 60 segundos
 
-// Função gerarSemana modificada
 function gerarSemana(diaInicial = 0) {
     limparSelecao();
     const tabsContainer = document.getElementById('diasSemanaTabs');
@@ -538,7 +534,8 @@ function gerarSemana(diaInicial = 0) {
     const dataAtual = new Date();
     const diaAtual = dataAtual.getDay();
     const segundaFeira = new Date(dataAtual);
-// Ajusta para a segunda-feira da semana atual
+
+    // Ajusta para a segunda-feira da semana atual
     if (diaAtual === 0) {
         segundaFeira.setDate(dataAtual.getDate() + 1);
     } else if (diaAtual === 6) {
@@ -546,8 +543,9 @@ function gerarSemana(diaInicial = 0) {
     } else {
         segundaFeira.setDate(dataAtual.getDate() - diaAtual + 1);
     }
-   // Recupera o índice do último dia selecionado no localStorage, com padrão para segunda-feira (0)
-   const lastSelectedDay = parseInt(localStorage.getItem('lastSelectedDay') || '0'); 
+   
+    // Recupera o índice do último dia selecionado no localStorage, com padrão para segunda-feira (0)
+    const lastSelectedDay = parseInt(localStorage.getItem('lastSelectedDay') || '0'); 
 
     for (let i = 0; i < 5; i++) {
         const dataDia = new Date(segundaFeira);
@@ -556,16 +554,20 @@ function gerarSemana(diaInicial = 0) {
         const dataFormatada = `${dataDia.getDate().toString().padStart(2, '0')}/${(dataDia.getMonth() + 1).toString().padStart(2, '0')}`;
         const diaId = diasSemana[i].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
+        // Adiciona um ponto verde para o dia atual
+        const simboloHoje = (dataDia.toDateString() === dataAtual.toDateString()) ? ' <span style="color: green;">●</span>' : '';
+
         // Cria a aba
         const tab = document.createElement('li');
         tab.className = 'nav-item';
         tab.role = 'presentation';
         tab.innerHTML = `
             <a class="nav-link ${i === lastSelectedDay ? 'active' : ''}" id="${diaId}-tab" data-bs-toggle="tab" href="#${diaId}" role="tab" aria-controls="${diaId}" aria-selected="${i === 0}">
-                ${diasSemana[i]}<br>${dataFormatada}
+                ${diasSemana[i]}${simboloHoje}<br>${dataFormatada}
             </a>
         `;
         tabsContainer.appendChild(tab);
+
         // Cria o conteúdo da aba
         const content = document.createElement('div');
         content.className = `tab-pane fade ${i === lastSelectedDay ? 'show active' : ''}`;
@@ -619,21 +621,23 @@ function gerarSemana(diaInicial = 0) {
 
         contentContainer.appendChild(content);
     }
-        // Adicione este evento para manter a aba selecionada
-        tabsContainer.addEventListener('click', function(e) {
-            if (e.target.classList.contains('nav-link')) {
-                // Salva o índice do dia selecionado
-                const dayIndex = Array.from(tabsContainer.children).indexOf(e.target.parentElement);
-                localStorage.setItem('lastSelectedDay', dayIndex);
-                
-                // Atualiza a aba ativa
-                tabsContainer.querySelectorAll('.nav-link').forEach(tab => tab.classList.remove('active'));
-                e.target.classList.add('active');
-            }
-            atualizarBadges();
-            atualizarDisponibilidadeSalas();
+    
+    // Adiciona evento para manter a aba selecionada
+    tabsContainer.addEventListener('click', function(e) {
+        if (e.target.classList.contains('nav-link')) {
+            // Salva o índice do dia selecionado
+            const dayIndex = Array.from(tabsContainer.children).indexOf(e.target.parentElement);
+            localStorage.setItem('lastSelectedDay', dayIndex);
+            
+            // Atualiza a aba ativa
+            tabsContainer.querySelectorAll('.nav-link').forEach(tab => tab.classList.remove('active'));
+            e.target.classList.add('active');
+        }
+        atualizarBadges();
+        atualizarDisponibilidadeSalas();
     });
 }
+
 
 // Adiciona os botões de troca de sala
 const salas = ['PARIPE', 'ILHÉUS', 'BAÍA DE TODOS OS SANTOS (DIRETORIA)'];
