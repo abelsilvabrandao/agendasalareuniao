@@ -555,7 +555,7 @@ function gerarSemana(diaInicial = 0) {
         const diaId = diasSemana[i].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
         // Adiciona um ponto verde para o dia atual
-        const simboloHoje = (dataDia.toDateString() === dataAtual.toDateString()) ? ' <span style="color: green;">●</span>' : '';
+        const simboloHoje = (dataDia.toDateString() === dataAtual.toDateString()) ? ' <span style="color: yellow;">●</span>' : '';
 
         // Cria a aba
         const tab = document.createElement('li');
