@@ -754,33 +754,6 @@ if (qrCodesContainer && salas) {
     console.warn("Elemento 'qrCodes' ou array 'salas' não encontrado no DOM.");
 }
 
-// Verificação da sala selecionada
-function verificarSalaNaURL() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const salaSelecionadaFormatada = urlParams.get('sala'); // Nome formatado da sala
-    console.log('Sala selecionada da URL:', salaSelecionadaFormatada); // Debugging
-
-    // Normaliza o nome da sala selecionada para comparação
-    const salaOriginal = salas.find(sala => formatarIdSala(sala) === salaSelecionadaFormatada); // Encontra a sala original
-
-    if (!salaOriginal) {
-        // Se não estiver, bloqueia o acesso e exibe uma mensagem de erro
-        Swal.fire({
-            icon: 'error',
-            title: 'Sala Não Encontrada',
-            text: 'A sala que você tentou acessar não existe. Por favor, verifique a URL e tente novamente.',
-            confirmButtonText: 'OK'
-        }).then(() => {
-            // Redireciona para a página inicial ou uma página de erro
-            window.location.replace('/'); // Substitui a URL atual pela página inicial
-        });
-    } else {
-        // Se estiver, atualiza o nome da sala na interface
-        document.getElementById('nomeSala').textContent = salaOriginal; // Exibe o nome original
-        carregarAgendamentos(); // Carrega os agendamentos para a sala selecionada
-    }
-}
-
 // Chame a função ao carregar a página
 document.addEventListener('DOMContentLoaded', verificarSalaNaURL);
 
