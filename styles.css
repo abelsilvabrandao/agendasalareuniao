@@ -136,7 +136,7 @@ body {
 }
 /* Estilos para a seção de salas disponíveis */
 .salas-disponiveis {
-    margin: 0; /* Espaçamento acima da seção de disponibilidade */
+    margin: 5px; /* Espaçamento acima da seção de disponibilidade */
 }
 /* Estilos da Navbar */
 .navbar {
@@ -242,6 +242,7 @@ input:checked + .slider:before {
 .room-buttons button:hover {
     background-color: #37d1a3;
     color: #ffffff;
+    margin: 10px;
 }
 
 .room-buttons button:active {
