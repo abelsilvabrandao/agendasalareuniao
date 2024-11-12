@@ -578,6 +578,7 @@ body.dark .room-buttons button.selected {
     border: none !important;
     outline: none !important;
     box-shadow: none !important;
+    margin: 10px;
 }
 
 .room-buttons button:focus,
