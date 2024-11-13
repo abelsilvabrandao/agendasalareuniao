@@ -222,18 +222,20 @@ async function atualizarDisponibilidadeSalas() {
             let estaDisponivel = true;
 
             // Verifica cada agendamento para determinar a disponibilidade da sala
-            snapshot.docs.forEach(doc => {
-                const horario = doc.data().horario;
-                const [horaAgendada, minutosAgendados] = horario.split(':').map(Number);
+snapshot.docs.forEach(doc => {
+    const horario = doc.data().horario;
+    const [horaAgendada, minutosAgendados] = horario.split(':').map(Number);
 
-                // Calcula a diferença em minutos entre o horário atual e o horário agendado
-                const diferencaEmMinutos = (horaAgendada * 60 + minutosAgendados) - (horaAtual * 60 + minutosAtuais);
+    // Converte o horário atual e o horário agendado para minutos totais do dia
+    const minutosTotaisAgendamentoInicio = horaAgendada * 60 + minutosAgendados;
+    const minutosTotaisAgendamentoFim = minutosTotaisAgendamentoInicio + 59; // Considera uma hora de duração
+    const minutosTotaisAtual = horaAtual * 60 + minutosAtuais;
 
-                // Se a diferença for menor que 60 minutos e maior ou igual a 0, a sala não está disponível
-                if (diferencaEmMinutos >= 0 && diferencaEmMinutos < 60) {
-                    estaDisponivel = false;
-                }
-            });
+    // Verifica se o horário atual está dentro do intervalo de agendamento
+    if (minutosTotaisAtual >= minutosTotaisAgendamentoInicio && minutosTotaisAtual <= minutosTotaisAgendamentoFim) {
+        estaDisponivel = false;
+    }
+});
 
             return { sala, disponivel: estaDisponivel, fechado: estaFechado };
         } catch (error) {
